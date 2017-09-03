@@ -1,23 +1,35 @@
+(function (global) {
 
-function WplPlugin() {
-    return {
-        async load( file ) {
+    var fs = require("fs-extra");
+    var path = require("path");
 
-            if ( /\.wpl$/.test( file ) === false ) return;
+    function WplPlugin() {
+        return {
+            async load( file ) {
 
-            return new Promise(function (resolve, reject) {
+                if ( /\.wpl$/.test( file ) === false ) return;
 
-                let songs = [];
-                
-                // ToDo parse wpl
+                return new Promise(function (resolve, reject) {
 
-                resolve({
-                    type: 'playlist',
-                    name: path.basename(file),
-                    songs: songs
+                    let songs = [];
+                    
+                    // ToDo parse wpl
+
+                    resolve({
+                        type: 'playlist',
+                        name: path.basename(file),
+                        songs: songs
+                    });
                 });
-            });
 
-        }
-    };
-}
+            }
+        };
+    }
+
+    if (module) {
+        module.exports = WplPlugin;
+    } else {
+        global.WplPlugin = WplPlugin
+    }
+
+})(this);

@@ -1,4 +1,7 @@
-function OggPlugin() {
+var fs = require("fs-extra");
+var path = require("path");
+
+module.exports = function OggPlugin() {
     return {
         async load (file) {
 
