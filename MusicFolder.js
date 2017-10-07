@@ -1,12 +1,14 @@
 (function (global) {
 
-    var fs = require("fs-extra");
-    var path = require("path");
+    let fs = require("fs-extra");
+    let path = require("path");
+    let walk = require("walk");
 
-    var FlacPlugin = require(`${__dirname}/plugins/FlacPlugin.js`);
-    var Mp3Plugin = require(`${__dirname}/plugins/Mp3Plugin.js`);
-    var OggPlugin = require(`${__dirname}/plugins/OggPlugin.js`);
-    var WplPlugin = require(`${__dirname}/plugins/WplPlugin.js`);
+    let FlacPlugin = require(`./plugins/FlacPlugin.js`);
+    let Mp3Plugin = require(`./plugins/Mp3Plugin.js`);
+    let OggPlugin = require(`./plugins/OggPlugin.js`);
+    let WplPlugin = require(`./plugins/WplPlugin.js`);
+    let PlaylistPlugin = require("./plugins/PlaylistPlugin");
 
     /**
      * 
@@ -35,7 +37,8 @@
                 WplPlugin(),
                 Mp3Plugin(),
                 OggPlugin(),
-                FlacPlugin()
+                FlacPlugin(),
+                PlaylistPlugin()
             ];
         }
 
@@ -44,21 +47,27 @@
          */
         async preload() {
 
-            if (await fs.exists(this.path) === false) {
-                throw new Error(`Folder "${this.path}" not found.`);
-            }
+            try {
 
-            if (await fs.exists(this.cacheFile)) {
+                if (await fs.exists(this.path) === false) {
+                    throw new Error(`Folder "${this.path}" not found.`);
+                }
 
-                // Import songs from cache file within folder
-                await this.loadCacheFile();
+                if (await fs.exists(this.cacheFile)) {
 
-            } else {
+                    // Import songs from cache file within folder
+                    await this.loadCacheFile();
 
-                // No cache file found
-                // We have to scan the folder and create a cache file if (this.caching)
-                await this.scanFolder();
+                } else {
 
+                    // No cache file found
+                    // We have to scan the folder and create a cache file if (this.caching)
+                    await this.scanFolder();
+
+                }
+
+            } catch (err) {
+                console.log(err);
             }
 
         }
@@ -72,19 +81,23 @@
 
             return new Promise(function (resolve, reject) {
 
-                let walker = walk.walk(self.path);
+                try {
 
-                walker.on("file", function (root, stats, next) {
+                    let walker = walk.walk(self.path);
 
-                    let file = path.join(root, stats.name);
-                    self.scanFile(file).then(next);
+                    walker.on("file", function (root, stats, next) {
+                        let file = path.join(root, stats.name);
+                        self.scanFile(file).then(next).catch(console.error);
+                    });
 
-                });
+                    walker.on("end", function () {
+                        self.saveCacheFile().catch(console.error);
+                        resolve();
+                    });
 
-                walker.on("end", function () {
-                    self.saveCacheFile();
-                    resolve();
-                });
+                } catch (err) {
+                    reject(err);
+                }
 
             });
         }
@@ -105,7 +118,6 @@
             for (let i = 0; i < this.plugins.length; i++) {
 
                 let plugin = this.plugins[i];
-
                 let result = await plugin.load(file);
 
                 if (result && typeof result.type === "string") {
@@ -131,7 +143,7 @@
                                 songs.push(createSong(s.file, s.metadata));
                             });
 
-                            this.playlist[result.name] = {
+                            this.playlists[result.name] = {
                                 name: result.name,
                                 songs: songs,
                                 file: file
@@ -258,8 +270,6 @@
 
                 writeStream = fs.createWriteStream(this.cacheFile);
 
-                writeStream.write("# version " + config.version);
-
                 for (let i = 0; i < this.songs.length; i++) {
                     writeStream.write(this.songs[i].relativePath + "\n");
                 }
@@ -271,6 +281,7 @@
         }
 
     }
+
 
     if (module) {
         module.exports = MusicFolder;
