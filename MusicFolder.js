@@ -135,7 +135,7 @@
                                 name: result.name,
                                 songs: songs,
                                 file: file
-                            }
+                            };
 
                             break;
 
