@@ -35,11 +35,10 @@
 
                             let songs = [];
                             let name = path.basename(file);
-
-                            // ToDo - parse result
-                            // ToDo - use other plugins to check <media> files
-
                             let lines = content.split("\n");
+
+                            // Trim extension
+                            name = name.replace(/\.[^/.]+$/, "");
 
                             for (let i=0; i<lines.length; i++) {
 
