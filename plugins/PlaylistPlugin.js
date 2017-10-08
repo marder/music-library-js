@@ -34,6 +34,7 @@
                         } else {
 
                             let songs = [];
+                            let name = path.basename(file);
 
                             // ToDo - parse result
                             // ToDo - use other plugins to check <media> files
@@ -46,8 +47,17 @@
 
                                     let line = lines[i].trim();
 
+                                    if (line.length === 0) {
+                                        continue;
+                                    }
+
                                     if (line.charAt(0) === "#") {
+
                                         // Comment or command
+                                        if (line.toLowerCase().startsWith("#name")) {
+                                            name = line.substring(6);
+                                        }
+
                                         continue;
                                     }
 
@@ -72,7 +82,7 @@
 
                             resolve({
                                 type: 'playlist',
-                                name: path.basename(file),
+                                name: name,
                                 songs: songs
                             });
 
