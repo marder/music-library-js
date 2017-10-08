@@ -3,7 +3,7 @@
     let fs = require("fs");
     let fsExtra = require("fs-extra");
     let path = require("path");
-    let xml2js = require('xml2js');
+    let glob = require("glob");
 
     let FlacPlugin = require(`./FlacPlugin.js`);
     let Mp3Plugin = require(`./Mp3Plugin.js`);
@@ -59,12 +59,14 @@
                                             let result = await plugin.load(innerFile);
                                             if (result && typeof result.type === "string" && result.type === "song") {
                                                 let song = createSong(innerFile, result.metadata);
-                                                this.songs.push(song);
+                                                songs.push(song);
                                             }
                                         }
                                     }
 
-                                } catch (err) { }
+                                } catch (err) {
+                                    console.error(err);
+                                }
 
                             }
 
@@ -79,6 +81,17 @@
                     });
                 });
 
+            },
+            async find( folder ) {
+                return new Promise(function (resolve, reject) {
+                    glob(folder + "/**/*.playlist", function (err, files) {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(files);
+                        }
+                    });
+                });
             }
         };
     }

@@ -34,11 +34,9 @@
             this.songs = [];
             this.playlists = {};
             this.plugins = [
-                WplPlugin(),
                 Mp3Plugin(),
                 OggPlugin(),
-                FlacPlugin(),
-                PlaylistPlugin()
+                FlacPlugin()
             ];
         }
 
@@ -65,6 +63,8 @@
                     await this.scanFolder();
 
                 }
+
+                await this.loadPlaylists();
 
             } catch (err) {
                 console.log(err);
@@ -130,7 +130,7 @@
 
                         case "song":
 
-                            let song = createSong(file, result.metadata);
+                            let song = self.createSong(file, result.metadata);
                             this.songs.push(song);
 
                             break;
@@ -140,7 +140,7 @@
                             let songs = [];
 
                             result.songs.forEach(s => {
-                                songs.push(createSong(s.file, s.metadata));
+                                songs.push(self.createSong(s.file, s.metadata));
                             });
 
                             this.playlists[result.name] = {
@@ -157,32 +157,53 @@
 
             }
 
-            function createSong(file, metadata) {
-                let song = {};
+        }
 
-                song.file = song.url = file;
-                song.relativePath = path.relative(self.path, file);
+        async loadPlaylists() {
 
-                song.artist = "Unknown artist";
-                song.album = "Unknown album";
-                song.title = "Unknown title";
+            try {
 
-                if (metadata) {
+                let plugin = PlaylistPlugin();
+                let files = await plugin.find(this.path);
 
-                    if (metadata.artist.length > 0)
-                        song.artist = metadata.artist[0];
+                for (let i = 0; i < files.length; i++) {
 
-                    song.album = metadata.album || song.album;
-                    song.title = metadata.title || song.title;
+                    let file = files[i];
+                    let result = await plugin.load(file);
 
-                    if (metadata.picture.length > 0)
-                        song.image = metadata.picture[0];
+                    if (result && typeof result.type === "string") {
 
+                        switch (result.type.toLowerCase()) {
+
+                            case "error":
+                                console.error(result.error);
+                                break;
+
+                            case "playlist":
+
+                                let songs = [];
+
+                                result.songs.forEach(s => {
+                                    songs.push(this.createSong(s.file, s.metadata));
+                                });
+
+                                this.playlists[result.name] = {
+                                    name: result.name,
+                                    songs: songs,
+                                    file: file
+                                };
+
+                                break;
+
+                        }
+
+                    }
                 }
 
-                return song;
-
+            } catch (err) {
+                console.log(err);
             }
+
         }
 
         /**
@@ -280,8 +301,33 @@
 
         }
 
-    }
+        async createSong(file, metadata) {
+            let song = {};
 
+            song.file = song.url = file;
+
+            song.artist = "Unknown artist";
+            song.album = "Unknown album";
+            song.title = "Unknown title";
+
+            if (metadata) {
+
+                if (metadata.artist.length > 0)
+                    song.artist = metadata.artist[0];
+
+                song.album = metadata.album || song.album;
+                song.title = metadata.title || song.title;
+
+                if (metadata.picture.length > 0)
+                    song.image = metadata.picture[0];
+
+            }
+
+            return song;
+
+        }
+
+    }
 
     if (module) {
         module.exports = MusicFolder;
