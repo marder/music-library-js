@@ -11,7 +11,7 @@
     let PlaylistPlugin = require("./plugins/PlaylistPlugin");
 
     /**
-     * 
+     *
      */
     class MusicFolder {
 
@@ -25,8 +25,8 @@
         }
 
         /**
-         * 
-         * @param {string} path 
+         *
+         * @param {string} path
          */
         constructor(path) {
             this.path = path;
@@ -41,7 +41,7 @@
         }
 
         /**
-         * 
+         *
          */
         async preload() {
 
@@ -73,7 +73,7 @@
         }
 
         /**
-         * 
+         *
          */
         async scanFolder() {
 
@@ -102,8 +102,8 @@
             });
         }
         /**
-         * 
-         * @param {string} file 
+         *
+         * @param {string} file
          */
         async scanFile(file) {
 
@@ -207,7 +207,7 @@
         }
 
         /**
-         * 
+         *
          */
         async loadCacheFile() {
 
@@ -271,7 +271,7 @@
 
         }
         /**
-         * 
+         *
          */
         async saveCacheFile() {
 
@@ -292,7 +292,9 @@
                 writeStream = fs.createWriteStream(this.cacheFile);
 
                 for (let i = 0; i < this.songs.length; i++) {
-                    writeStream.write(this.songs[i].relativePath + "\n");
+                    var song = this.songs[i];
+                    var relative = path.relative(this.path, song.file);
+                    writeStream.write(relative + "\n");
                 }
 
             } catch (ex) {
@@ -301,11 +303,12 @@
 
         }
 
-        async createSong(file, metadata) {
+        createSong(file, metadata) {
             let song = {};
 
             song.file = song.url = file;
 
+            song.number = 0;
             song.artist = "Unknown artist";
             song.album = "Unknown album";
             song.title = "Unknown title";
@@ -317,6 +320,10 @@
 
                 song.album = metadata.album || song.album;
                 song.title = metadata.title || song.title;
+
+                if ("number" in metadata) {
+                    song.number = metadata.number;
+                }
 
                 if (metadata.picture.length > 0)
                     song.image = metadata.picture[0];
