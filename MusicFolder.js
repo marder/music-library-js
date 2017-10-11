@@ -302,6 +302,9 @@
             }
 
         }
+        async refresh() {
+            
+        }
 
         createSong(file, metadata) {
             let song = {};
