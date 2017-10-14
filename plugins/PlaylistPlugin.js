@@ -67,7 +67,6 @@
                                             let plugin = plugins[i];
                                             let result = await plugin.load(innerFile);
                                             if (result && typeof result.type === "string" && result.type === "song") {
-                                                //let song = createSong(innerFile, result.metadata);
                                                 songs.push({
                                                     file: innerFile, 
                                                     metadata: result.metadata
@@ -109,42 +108,10 @@
         };
     }
 
-    /**
-     *
-     * @param file
-     * @param metadata
-     * @returns {}
-     */
-    function createSong(file, metadata) {
-        let song = {};
-
-        song.file = song.url = file;
-
-        song.artist = "Unknown artist";
-        song.album = "Unknown album";
-        song.title = "Unknown title";
-
-        if (metadata) {
-
-            if (metadata.artist.length > 0)
-                song.artist = metadata.artist[0];
-
-            song.album = metadata.album || song.album;
-            song.title = metadata.title || song.title;
-
-            if (metadata.picture.length > 0)
-                song.image = metadata.picture[0];
-
-        }
-
-        return song;
-
-    }
-
     if (module) {
         module.exports = PlaylistPlugin;
     } else {
-        global.WplPlugin = PlaylistPlugin
+        global.PlaylistPlugin = PlaylistPlugin
     }
 
 })(this);
