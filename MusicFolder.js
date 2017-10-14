@@ -305,7 +305,7 @@
 
         }
         async refresh() {
-            
+
         }
 
         createSong(file, metadata) {
@@ -320,8 +320,11 @@
 
             if (metadata) {
 
-                if (metadata.artist.length > 0)
+                if (metadata.albumartist.length > 0) {
+                    song.artist = metadata.albumartist[0];
+                } else if (metadata.artist.length > 0) {
                     song.artist = metadata.artist[0];
+                }
 
                 song.album = metadata.album || song.album;
                 song.title = metadata.title || song.title;
