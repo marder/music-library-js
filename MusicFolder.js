@@ -161,6 +161,8 @@
 
         async loadPlaylists() {
 
+            var self = this;
+
             try {
 
                 let plugin = PlaylistPlugin();
@@ -184,7 +186,7 @@
                                 let songs = [];
 
                                 result.songs.forEach(s => {
-                                    songs.push(this.createSong(s.file, s.metadata));
+                                    songs.push(self.createSong(s.file, s.metadata));
                                 });
 
                                 this.playlists[result.name] = {

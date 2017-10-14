@@ -67,8 +67,12 @@
                                             let plugin = plugins[i];
                                             let result = await plugin.load(innerFile);
                                             if (result && typeof result.type === "string" && result.type === "song") {
-                                                let song = createSong(innerFile, result.metadata);
-                                                songs.push(song);
+                                                //let song = createSong(innerFile, result.metadata);
+                                                songs.push({
+                                                    file: innerFile, 
+                                                    metadata: result.metadata
+                                                });
+                                                break;
                                             }
                                         }
                                     }
@@ -111,7 +115,7 @@
      * @param metadata
      * @returns {}
      */
-    function createSong(file, relativeFile, metadata) {
+    function createSong(file, metadata) {
         let song = {};
 
         song.file = song.url = file;
