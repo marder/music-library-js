@@ -311,7 +311,7 @@
         createSong(file, metadata) {
             let song = {};
 
-            song.file = song.url = file;
+            song.file = file;
 
             song.number = 0;
             song.artist = "Unknown artist";
