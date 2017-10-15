@@ -40,10 +40,10 @@
                         //   duration : 302.41 // in seconds 
                         // }
 
-                        for (let i = 0; i < result.picture.length; i++) {
-                            let picture = result.picture[i];
-                            result.picture[i] = `data:image/${picture.format};base64,` + picture.data.toString("base64");
-                        }
+                        // for (let i = 0; i < result.picture.length; i++) {
+                        //     let picture = result.picture[i];
+                        //     result.picture[i] = `data:image/${picture.format};base64,` + picture.data.toString("base64");
+                        // }
 
                         resolve({
                             type: "song",

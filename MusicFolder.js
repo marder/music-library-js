@@ -333,8 +333,9 @@
                     song.number = metadata.number;
                 }
 
-                if (metadata.picture.length > 0)
+                if (metadata.picture.length > 0) {
                     song.image = metadata.picture[0];
+                }
 
             }
 
