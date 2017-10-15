@@ -320,6 +320,8 @@
 
             if (metadata) {
 
+                song.raw = metadata;
+
                 if (metadata.albumartist.length > 0) {
                     song.artist = metadata.albumartist[0];
                 } else if (metadata.artist.length > 0) {
@@ -329,12 +331,9 @@
                 song.album = metadata.album || song.album;
                 song.title = metadata.title || song.title;
 
-                if ("number" in metadata) {
-                    song.number = metadata.number;
-                }
-
                 if (metadata.picture.length > 0) {
                     song.image = metadata.picture[0];
+                    delete song.raw.picture;
                 }
 
             }
