@@ -106,7 +106,7 @@
                 album: metadata.album,
                 file: file
             };
-            
+
             // If has images, use only first one
             if (metadata.picture.length > 0) {
                 song.image = metadata.picture[0];
@@ -126,10 +126,10 @@
                 songs: []
             }
 
-            for (let i=0; i<files.length; i++) {
+            for (let i = 0; i < files.length; i++) {
                 let file = files[i].file;
                 file = path.normalize(file);
-                for (let j=0; j<this.songs.length; j++) {
+                for (let j = 0; j < this.songs.length; j++) {
                     let song = this.songs[j];
                     if (file === path.normalize(song.file)) {
                         playlist.songs.push(song);
