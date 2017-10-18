@@ -17,10 +17,6 @@ var MusicMetadata = require("musicmetadata");
 //   duration : 302.41 // in seconds 
 // }
 
-// for (let i = 0; i < result.picture.length; i++) {
-//     let picture = result.picture[i];
-//     result.picture[i] = `data:image/${picture.format};base64,` + picture.data;
-// }
 
 module.exports = function (file) {
 
