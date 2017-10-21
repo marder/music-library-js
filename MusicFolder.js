@@ -5,16 +5,12 @@
     let walk = require("walk");
     let uuid = require("uuid");
 
-    let FlacPlugin = require(`./plugins/FlacPlugin.js`);
-    let Mp3Plugin = require(`./plugins/Mp3Plugin.js`);
+    let MusicFilePlugin = require(`./plugins/MusicFilePlugin.js`);
     let OggPlugin = require(`./plugins/OggPlugin.js`);
-    let WplPlugin = require(`./plugins/WplPlugin.js`);
     let PlaylistPlugin = require("./plugins/PlaylistPlugin");
 
     let AudioFilePlugins = [
-        FlacPlugin(),
-        Mp3Plugin(),
-        OggPlugin()
+        MusicFilePlugin()
     ];
 
     let PlaylistPlugins = [

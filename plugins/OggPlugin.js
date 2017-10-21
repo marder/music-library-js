@@ -1,6 +1,7 @@
 var fs = require("fs-extra");
 var path = require("path");
 let glob = require("glob");
+let audioMetadata = require("audio-metadata");
 
 module.exports = function OggPlugin() {
     return {
@@ -16,21 +17,19 @@ module.exports = function OggPlugin() {
             }).catch(console.error);
         },
 
-        async load (file) {
+        async load(file) {
 
-            if ( /\.ogg$/.test( file ) === false ) return;
-            
-            return new Promise(function (resolve, reject) {
+            if (/\.ogg$/.test(file) === false) return;
 
-                // Ogg does not contain metadata like artist, album, title etc
-                // So just return as file
+            let buffer = await fs.readFile(file);
+            let metadata = audioMetadata.ogg(buffer);
 
-                resolve({
-                    type: "song",
-                    file: file,
-                    metadata: null
-                })
-            });
+            return {
+                type: "song",
+                file: file,
+                metadata: metadata
+            };
+
         }
     }
 }
