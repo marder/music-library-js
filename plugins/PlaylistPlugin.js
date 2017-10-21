@@ -5,14 +5,10 @@
     let path = require("path");
     let glob = require("glob");
 
-    let FlacPlugin = require(`./FlacPlugin.js`);
-    let Mp3Plugin = require(`./Mp3Plugin.js`);
-    let OggPlugin = require(`./OggPlugin.js`);
+    let MusicFilePlugin = require(`./MusicFilePlugin.js`);
 
     let plugins = [
-        Mp3Plugin(),
-        OggPlugin(),
-        FlacPlugin()
+        MusicFilePlugin()
     ];
 
     function PlaylistPlugin() {
