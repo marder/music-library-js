@@ -66,6 +66,8 @@
 
         async scan() {
 
+            console.log("Start scanning " + this.folder);
+
             for (let i = 0; i < AudioFilePlugins.length; i++) {
                 let plugin = AudioFilePlugins[i];
                 let files = await plugin.find(this.folder);
@@ -89,6 +91,7 @@
                     }
                 }
             }
+
 
         }
 
