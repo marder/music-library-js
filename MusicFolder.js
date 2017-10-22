@@ -85,7 +85,7 @@
                 for (let j = 0; j < files.length; j++) {
                     let data = await plugin.load(files[j]);
                     if (data) {
-                        this.addPlaylist(data.file, data.songs);
+                        this.addPlaylist(data.name, data.file, data.songs);
                     }
                 }
             }
@@ -114,7 +114,7 @@
             return song;
 
         }
-        addPlaylist(name, files) {
+        addPlaylist(name, file, files) {
 
             let playlist = {
                 name: name,
