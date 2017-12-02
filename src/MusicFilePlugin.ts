@@ -1,10 +1,10 @@
 (function () {
     
         let glob = require("glob");
-        var fs = require("fs-extra");
-        var path = require("path");
+        let fs = require("fs-extra");
+        let path = require("path");
         //var MusicMetadata = require("musicmetadata");
-        var getMetadata = require("../utils/MusicMetadata.js");
+        let getMetadata = require("../utils/MusicMetadata.js");
     
         module.exports = function MusicFilePlugin() {
             return {

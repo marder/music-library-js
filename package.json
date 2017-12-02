@@ -1,0 +1,30 @@
+{
+  "name": "music-library",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "gulp": "^3.9.1",
+    "gulp-sourcemaps": "^2.6.1",
+    "gulp-tslint": "^8.1.2",
+    "gulp-typescript": "^3.2.3",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.2"
+  },
+  "devDependencies": {
+    "@types/node": "^8.0.53"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marder/music-library-js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/marder/music-library-js/issues"
+  },
+  "homepage": "https://github.com/marder/music-library-js#readme"
+}
