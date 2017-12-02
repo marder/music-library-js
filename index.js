@@ -1,0 +1,1 @@
+module.exports = requre("./build/module.js");
