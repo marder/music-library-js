@@ -1,39 +1,36 @@
-var fs = require("fs");
-var path = require("path");
-var MusicMetadata = require("musicmetadata");
+import * as fs from '@rammbulanz/afs'
+import * as path from 'path';
+import * as MusicMetadata from 'musicmetadata';
+
+export interface IMusicMetaData {
+	artist: string[]
+	album: string
+	albumartist: string
+	year: string
+	track: { no: number, of: number }
+	disk: { no: number, of: number },
+	genre: string[],
+	picture: Array<{ format: string, data: Buffer }>
+	duration: number
+}
 
 
-// example musicmetadata result
-// { 
-//   artist : ['Spor'],
-//   album : 'Nightlife, Vol 5.',
-//   albumartist : [ 'Andy C', 'Spor' ],
-//   title : 'Stronger',
-//   year : '2010',
-//   track : { no : 1, of : 44 },
-//   disk : { no : 1, of : 2 },
-//   genre : ['Drum & Bass'],
-//   picture : [ { format : 'jpg', data : <Buffer> } ],
-//   duration : 302.41 // in seconds 
-// }
+export function getMetadata(file: string): Promise<IMusicMetaData> {
 
+	return new Promise(function (resolve, reject) {
 
-module.exports = function (file) {
+		var readStream = fs.createReadStream(file);
 
-    return new Promise(function (resolve, reject) {
+		let parser = new MusicMetadata(readStream, function (err: Error|null, result: IMusicMetaData) {
 
-        var readStream = fs.createReadStream(file);
+			if (err) {
+				reject(err);
+			} else {
+				readStream.close();
+				resolve(result);
+			}
 
-        let parser = new MusicMetadata(readStream, function (err, result) {
+		});
 
-            if (err) {
-                reject(err);
-            } else {
-                readStream.close();
-                resolve(result);
-            }
-
-        });
-
-    });
+	});
 }
