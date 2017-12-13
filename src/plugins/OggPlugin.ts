@@ -21,7 +21,7 @@ export namespace OggPlugin {
 
         if (/\.ogg$/.test(file) === false) return;
 
-        let buffer = await fs.readFile(file);
+        let buffer = await fs.readFile(file, undefined);
         let metadata = audioMetadata.ogg(buffer);
 
         return {

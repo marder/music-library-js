@@ -15,13 +15,13 @@ export interface IMusicMetaData {
 }
 
 
-export function getMetadata(file: string): Promise<IMusicMetaData> {
+export function getMetadata(file: string): Promise<MM.Metadata> {
 
 	return new Promise(function (resolve, reject) {
 
 		var readStream = fs.createReadStream(file);
 
-		let parser = new MusicMetadata(readStream, function (err: Error|null, result: IMusicMetaData) {
+		let parser = MusicMetadata(readStream, function (err, result) {
 
 			if (err) {
 				reject(err);
