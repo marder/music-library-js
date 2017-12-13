@@ -1,1 +1,1 @@
-module.exports = requre("./build/module.js");
+module.exports = require("./build/module.js");

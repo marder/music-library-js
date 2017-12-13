@@ -5,15 +5,17 @@ import * as uuid from 'uuid';
 import * as glob from 'glob';
 import * as MusicMetadata from 'musicmetadata';
 
-import { Song } from './Song';
+import { Song, createSong } from './Song';
 import { Playlist } from './Playlist';
 import { PlaylistParser } from './PlaylistParsers';
 
-export interface IMusicFolder {
+export declare interface IMusicFolder {
     folder: string
     songs: Array<Song>
     playlists: Array<Playlist>
 }
+
+export declare type MusicFolderScanProgressCallback = (file: string, item: Song|Playlist) => void;
 
 export class MusicFolder implements IMusicFolder {
 
@@ -80,54 +82,52 @@ export class MusicFolder implements IMusicFolder {
 
     }
 
-    scan() {
+    async scan(progressCallback?: MusicFolderScanProgressCallback): Promise<void> {
 
-        console.log("Start scanning " + this.folder);
+        let self = this;
 
-        return new Promise(function (fulfill, reject) {
+        if (!(await fs.exists(self.folder))) {
+            throw new Error(`Folder '${self.folder}' doesn't exist.`);
+        }
 
-            let gwc = path.join(this.folder, '*');
+        let files = await fs.readdir(self.folder, true, true);
 
-            glob(gwc, async function (err, files) {
+        for (let file of files) {
 
-                if (err) {
-                    reject(err);
-                    return;
+            try {
+
+                let exists = await fs.exists(file);
+                let stats = await fs.stat(file);
+
+                if (!stats.isFile()) {
+                    continue;
                 }
 
-                for (let file of files) {
+                let extension = path.extname(file);
 
-                    let exists = await fs.exists(file);
-                    let stats = await fs.stat(file);
+                let isAudioFile = MusicFolder.AudioExtensions.indexOf(extension) > -1;
+                let isPlaylistFile = MusicFolder.PlaylistExtensions.indexOf(extension) > -1;
 
-                    if (!stats.isFile()) {
-                        continue;
-                    }
-
-                    let extension = path.extname(file);
-                    
-                    let isAudioFile = MusicFolder.AudioExtensions.indexOf(extension) > -1;
-                    let isPlaylistFile = MusicFolder.PlaylistExtensions.indexOf(extension) > -1;
-
-                    if (!isAudioFile && !isPlaylistFile) {
-                        // File is neither an audio file nor a playlist file. Ignore it
-                        continue;
-                    }
-
-                    if (isAudioFile) {
-
-                    } else if (isPlaylistFile) {
-
-                        let playlist = PlaylistParser.getPlaylist(file);
-
-                    }
-
+                if (!isAudioFile && !isPlaylistFile) {
+                    // File is neither an audio file nor a playlist file. Ignore it
+                    continue;
                 }
 
-            })
+                if (isAudioFile) {
+                    let song = await createSong(file);
+                    self.songs.push(song);
+                    progressCallback(file, song);
+                } else if (isPlaylistFile) {
+                    let playlist = await PlaylistParser.getPlaylist(file);
+                    self.playlists.push(playlist);
+                    progressCallback(file, playlist);
+                }
 
-        });
+            } catch (err) {
+                console.error(err);
+            }
 
+        }
 
     }
 
